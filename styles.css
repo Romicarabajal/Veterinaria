@@ -1,0 +1,430 @@
+/* ==========================================================
+   Veterinaria Patitas · estilos
+   Mobile first: una columna en el celular, dos desde 768 px
+   ========================================================== */
+
+/* 1. Variables de color y medidas (se usan con var(--nombre)) */
+:root {
+  --primario: #14A3A3;        /* verde agua: botones, títulos, línea de tiempo */
+  --primario-oscuro: #0E7F7F; /* hover de los botones */
+  --primario-claro: #DDF3F3;  /* fondos suaves */
+  --coral: #FF8A75;           /* avisos y acciones de cuidado */
+  --coral-claro: #FFE8E3;
+  --crema: #FFF8EC;           /* fondo de la página */
+  --blanco: #FFFFFF;
+  --texto: #2B3A3A;
+  --texto-suave: #6A7A7A;
+  --borde: #E3DCCB;
+  --verde-ok: #2E9E5B;
+  --amarillo: #E0A100;
+  --rojo: #D64545;
+  --radio: 16px;
+  --sombra: 0 4px 14px rgba(20, 60, 60, 0.10);
+  --sombra-hover: 0 8px 20px rgba(20, 60, 60, 0.16);
+}
+
+/* 2. Base */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Inter", system-ui, sans-serif;
+  color: var(--texto);
+  background: var(--crema);
+  line-height: 1.45;
+}
+
+h1, h2, h3 {
+  font-family: "Poppins", system-ui, sans-serif;
+  margin: 0 0 0.5rem;
+}
+
+h2 { color: var(--primario-oscuro); font-size: 1.4rem; }
+h3 { font-size: 1.05rem; }
+
+.subtitulo { margin-top: 0.25rem; color: var(--texto); }
+
+.oculto { display: none !important; }
+
+.solo-lectores {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+main { padding: 1rem; max-width: 1100px; margin: 0 auto; }
+
+/* 3. Encabezado y menú */
+.encabezado {
+  background: var(--primario);
+  color: var(--blanco);
+  box-shadow: var(--sombra);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.barra {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.8rem 1rem 0.4rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.barra h1 { margin: 0; font-size: 1.35rem; }
+
+.buscador input {
+  width: 100%;
+  padding: 0.6rem 0.9rem;
+  border: none;
+  border-radius: 999px;
+  font: inherit;
+  color: var(--texto);
+}
+
+.acciones-datos { display: flex; gap: 0.5rem; }
+
+#menu {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;            /* en el celular se desliza de costado */
+  padding: 0.4rem 1rem 0.7rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+#menu button {
+  flex: 0 0 auto;
+  border: none;
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--blanco);
+  font: inherit;
+  font-weight: 500;
+  padding: 0.5rem 0.9rem;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+#menu button:hover { background: rgba(255, 255, 255, 0.32); transform: translateY(-1px); }
+#menu button.activo { background: var(--blanco); color: var(--primario-oscuro); font-weight: 600; }
+
+/* 4. Secciones: se ve una por vez */
+.seccion { display: none; }
+.seccion.activa { display: block; }
+
+.dos-columnas { display: grid; grid-template-columns: 1fr; gap: 1rem; margin-top: 0.8rem; }
+
+/* 5. Tarjetas */
+.tarjeta {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1rem;
+  margin-bottom: 0.8rem;
+}
+
+.lista { display: flex; flex-direction: column; gap: 0.7rem; }
+
+.vacio {
+  background: var(--primario-claro);
+  border-radius: var(--radio);
+  padding: 0.9rem 1rem;
+  color: var(--texto-suave);
+}
+
+.aviso-vacio { background: var(--coral-claro); }
+.aviso-vacio p { margin-top: 0; }
+
+/* 6. Formularios */
+.campo { margin-bottom: 0.7rem; display: flex; flex-direction: column; gap: 0.2rem; }
+.campo label { font-weight: 600; font-size: 0.9rem; }
+
+input, select, textarea {
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border: 1.5px solid var(--borde);
+  border-radius: 10px;
+  background: var(--blanco);
+  color: var(--texto);
+  width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: 3px solid var(--primario-claro);
+  border-color: var(--primario);
+}
+
+.invalido { border-color: var(--rojo); }
+.error { color: var(--rojo); font-size: 0.82rem; min-height: 0; }
+
+.fila-botones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+/* 7. Botones con hover (cambio de color + leve elevación) */
+.btn {
+  border: none;
+  background: var(--primario);
+  color: var(--blanco);
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+
+.btn:hover { background: var(--primario-oscuro); transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+
+.btn.secundario { background: var(--primario-claro); color: var(--primario-oscuro); }
+.btn.secundario:hover { background: #C6E9E9; }
+
+.btn.peligro { background: var(--coral-claro); color: #B03A28; }
+.btn.peligro:hover { background: #FFD3CA; }
+
+.btn.chico { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
+
+.encabezado .btn.secundario { background: rgba(255, 255, 255, 0.22); color: var(--blanco); }
+.encabezado .btn.secundario:hover { background: rgba(255, 255, 255, 0.36); }
+
+.acciones { display: flex; gap: 0.4rem; flex-wrap: wrap; margin-top: 0.6rem; }
+
+/* 8. Tarjetas de dueños y mascotas */
+.card-item {
+  background: var(--blanco);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 0.9rem 1rem;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+.card-item:hover { transform: translateY(-2px); box-shadow: var(--sombra-hover); }
+
+.card-item h3 { margin-bottom: 0.15rem; }
+.card-item p { margin: 0.15rem 0; font-size: 0.92rem; color: var(--texto-suave); }
+
+.card-mascota { display: flex; gap: 0.8rem; align-items: flex-start; }
+.emoji-especie {
+  font-size: 2.2rem;
+  width: 3.4rem; height: 3.4rem;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--primario-claro);
+  border-radius: 50%;
+  flex: 0 0 auto;
+}
+.card-mascota > div:last-child { flex: 1; min-width: 0; }
+
+/* 9. Buscador general */
+.resultados {
+  background: var(--blanco);
+  max-width: 1100px;
+  margin: 0.6rem auto 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  width: calc(100% - 2rem);
+}
+.resultados h3 { margin-bottom: 0.5rem; }
+.resultado-item {
+  display: flex; align-items: center; gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: var(--primario-claro);
+  border-radius: 10px;
+  padding: 0.5rem 0.7rem;
+  margin-bottom: 0.4rem;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.resultado-item:hover { background: #C6E9E9; transform: translateY(-1px); }
+
+/* 10. Agenda de turnos */
+.controles-agenda { display: flex; gap: 0.4rem; align-items: center; flex-wrap: wrap; }
+.controles-agenda input { width: auto; flex: 1 1 9rem; }
+
+.titulo-dia { font-weight: 600; margin: 0.7rem 0 0.4rem; color: var(--primario-oscuro); }
+
+.semana { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.25rem; margin-bottom: 0.8rem; }
+.dia-semana {
+  border: 1.5px solid var(--borde);
+  background: var(--blanco);
+  border-radius: 10px;
+  padding: 0.3rem 0.1rem;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 0.1rem;
+  transition: background 0.15s, transform 0.15s;
+}
+.dia-semana:hover { background: var(--primario-claro); transform: translateY(-1px); }
+.dia-semana.seleccionado { background: var(--primario); color: var(--blanco); border-color: var(--primario); }
+.dia-semana.hoy:not(.seleccionado) { border-color: var(--primario); }
+.dia-semana .cantidad {
+  background: var(--coral);
+  color: var(--blanco);
+  border-radius: 999px;
+  min-width: 1.2rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.dia-semana .cantidad.cero { background: transparent; color: var(--texto-suave); }
+
+.turno { display: flex; gap: 0.8rem; }
+.turno .hora {
+  font-family: "Poppins", system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--primario-oscuro);
+  flex: 0 0 3.6rem;
+}
+.turno > div:last-child { flex: 1; min-width: 0; }
+.turno.cancelado { opacity: 0.6; }
+
+/* Etiquetas de estado */
+.etiqueta {
+  display: inline-block;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-left: 0.4rem;
+}
+.etiqueta.pendiente { background: #FFF1C9; color: #8A6400; }
+.etiqueta.atendido { background: #D8F2E2; color: #1F7A44; }
+.etiqueta.cancelado { background: #ECECEC; color: #666; }
+
+/* 11. Historia clínica: línea de tiempo vertical */
+.ficha-mascota { display: flex; gap: 0.8rem; align-items: center; margin-bottom: 1rem; }
+.ficha-mascota p { margin: 0; color: var(--texto-suave); font-size: 0.92rem; }
+
+.info-turno { margin: 0 0 0.7rem; color: var(--primario-oscuro); font-weight: 600; font-size: 0.9rem; }
+.info-turno:empty { display: none; }
+
+.linea-tiempo {
+  position: relative;
+  margin-left: 0.7rem;
+  padding-left: 1.4rem;
+  border-left: 3px solid var(--primario-claro);
+}
+
+.consulta { position: relative; margin-bottom: 1rem; }
+.consulta::before {
+  content: "";
+  position: absolute;
+  left: -2.05rem;
+  top: 1.1rem;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--primario);
+  border: 3px solid var(--crema);
+}
+.consulta .fecha { font-family: "Poppins", system-ui, sans-serif; font-weight: 600; color: var(--primario-oscuro); }
+.consulta p { margin: 0.2rem 0; font-size: 0.92rem; color: var(--texto); }
+
+.alerta-control {
+  background: var(--coral-claro);
+  color: #B03A28;
+  border-radius: 10px;
+  padding: 0.35rem 0.6rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  margin: 0.4rem 0;
+}
+
+/* 12. Aviso flotante */
+.aviso {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translate(-50%, 150%);
+  background: var(--texto);
+  color: var(--blanco);
+  padding: 0.7rem 1.1rem;
+  border-radius: 12px;
+  box-shadow: var(--sombra-hover);
+  max-width: calc(100% - 2rem);
+  transition: transform 0.25s;
+  z-index: 50;
+}
+.aviso.visible { transform: translate(-50%, 0); }
+.aviso.ok { background: var(--verde-ok); }
+.aviso.fallo { background: var(--rojo); }
+
+/* 13. Ajustes para el celular (Práctico 11) */
+html { -webkit-text-size-adjust: 100%; }
+body { overflow-x: hidden; }                       /* nunca scroll de costado */
+
+/* Todo lo que se toca mide al menos 44 px de alto */
+button, .btn, input, select, textarea { min-height: 44px; }
+/* 16 px o más: si no, el iPhone hace zoom al tocar un campo */
+input, select, textarea { font-size: 16px; }
+button, a.btn { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+a.btn { display: inline-flex; align-items: center; text-decoration: none; }
+.card-item, .tarjeta { overflow-wrap: anywhere; }
+
+.enlace-tel { color: var(--primario-oscuro); font-weight: 600; text-decoration: none; }
+.enlace-tel:hover { text-decoration: underline; }
+
+#menu button .ico { margin-right: 0.3rem; font-size: 1.1rem; }
+.dia-semana { min-height: 56px; }
+
+/* Aviso discreto "sin conexión": ocupa su lugar, no tapa botones ni formularios */
+.aviso-offline {
+  background: #FFF1C9;
+  color: #6B4E00;
+  text-align: center;
+  font-size: 0.85rem;
+  padding: 0.35rem 0.8rem;
+}
+
+/* En el celular, la agenda va primero y el formulario de turno debajo */
+#seccion-turnos .dos-columnas > div { order: -1; }
+
+/* 14. Computadora: desde 768 px, dos columnas */
+@media (min-width: 768px) {
+  .barra { flex-direction: row; align-items: center; justify-content: space-between; }
+  .buscador { flex: 1; max-width: 360px; }
+  .dos-columnas { grid-template-columns: minmax(280px, 380px) 1fr; align-items: start; }
+  #seccion-historias .dos-columnas { grid-template-columns: minmax(280px, 380px) 1fr; }
+  #seccion-turnos .dos-columnas > div { order: 0; }   /* en la compu, el formulario va a la izquierda */
+}
+
+/* 15. Celulares (menos de 600 px): el menú es una barra fija abajo, cómoda para el pulgar */
+@media (max-width: 599px) {
+  body { padding-bottom: 80px; }
+
+  #menu {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 30;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.2rem;
+    max-width: none;
+    margin: 0;
+    overflow: visible;
+    padding: 0.3rem 0.3rem calc(0.3rem + env(safe-area-inset-bottom));
+    background: var(--primario);
+    box-shadow: 0 -4px 14px rgba(20, 60, 60, 0.20);
+  }
+
+  #menu button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.1rem;
+    padding: 0.3rem 0.1rem;
+    font-size: 0.74rem;
+    border-radius: 12px;
+    background: transparent;
+  }
+  #menu button .ico { margin: 0; font-size: 1.3rem; line-height: 1; }
+
+  .aviso { bottom: 5.5rem; }
+}

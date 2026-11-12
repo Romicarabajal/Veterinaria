@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Generador de íconos</title>
+  <style>
+    body { font-family: "Inter", system-ui, sans-serif; background: #FFF8EC; color: #2B3A3A; margin: 0; padding: 1rem; }
+    h1 { font-size: 1.3rem; margin-top: 0; }
+    .controles { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; margin-bottom: 1rem; }
+    label { display: flex; flex-direction: column; gap: 0.25rem; font-weight: 600; font-size: 0.9rem; }
+    input[type="text"] { font-size: 1.4rem; width: 5rem; padding: 0.3rem; }
+    input[type="color"] { width: 4rem; height: 2.6rem; padding: 0; border: none; }
+    #hex { width: 7rem; font-size: 1rem; }
+    .vistas { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
+    figure { margin: 0; text-align: center; }
+    canvas { background: repeating-conic-gradient(#ddd 0% 25%, #fff 0% 50%) 50% / 16px 16px; border-radius: 12px; }
+    #c192 { width: 192px; height: 192px; }
+    #c512 { width: 256px; height: 256px; }   /* se ve a la mitad para que entre en pantalla, pero se descarga de 512 */
+    button { font: inherit; font-weight: 600; background: #14A3A3; color: #fff; border: none; border-radius: 10px; padding: 0.6rem 1rem; cursor: pointer; margin-top: 0.5rem; }
+    button:hover { background: #0E7F7F; }
+    .nota { margin-top: 1.5rem; font-size: 0.9rem; color: #6A7A7A; }
+  </style>
+</head>
+<body>
+  <h1>🎨 Generador de íconos (herramienta tuya: no se sube con la app)</h1>
+
+  <div class="controles">
+    <label>Emoji
+      <input type="text" id="emoji" value="🐾" maxlength="4">
+    </label>
+    <label>Color de fondo
+      <span><input type="color" id="selector" value="#14A3A3"> <input type="text" id="hex" value="#14A3A3"></span>
+    </label>
+  </div>
+
+  <div class="vistas">
+    <figure>
+      <canvas id="c192" width="192" height="192"></canvas>
+      <figcaption>192 × 192</figcaption>
+      <button type="button" id="bajar192">Descargar icono-192.png</button>
+    </figure>
+    <figure>
+      <canvas id="c512" width="512" height="512"></canvas>
+      <figcaption>512 × 512</figcaption>
+      <button type="button" id="bajar512">Descargar icono-512.png</button>
+    </figure>
+  </div>
+
+  <p class="nota">Movelos a la carpeta de tu app, sueltos junto a index.html. El dibujo deja un margen de seguridad del 10 % porque algunos celulares recortan el ícono en círculo.</p>
+
+  <script>
+    // Dibuja el ícono en un canvas: fondo con esquinas redondeadas + emoji grande en el centro
+    function dibujar(canvas) {
+      const lado = canvas.width;
+      const ctx = canvas.getContext("2d");
+      const color = document.getElementById("hex").value;
+      const emoji = document.getElementById("emoji").value || "🐾";
+
+      ctx.clearRect(0, 0, lado, lado);
+
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.roundRect(0, 0, lado, lado, lado * 0.22);
+      ctx.fill();
+
+      // El emoji ocupa ~60 % del lado, así queda dentro del margen de seguridad del 10 %
+      ctx.font = Math.round(lado * 0.6) + "px system-ui, 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+      ctx.fillText(emoji, lado / 2, lado / 2 + lado * 0.04);
+    }
+
+    function dibujarTodo() {
+      dibujar(document.getElementById("c192"));
+      dibujar(document.getElementById("c512"));
+    }
+
+    function descargar(idCanvas, nombre) {
+      const enlace = document.createElement("a");
+      enlace.href = document.getElementById(idCanvas).toDataURL("image/png");
+      enlace.download = nombre;          // nombres exactos que pide el manifest
+      enlace.click();
+    }
+
+    // El selector de color y el campo de texto se mantienen sincronizados
+    document.getElementById("selector").addEventListener("input", e => {
+      document.getElementById("hex").value = e.target.value;
+      dibujarTodo();
+    });
+    document.getElementById("hex").addEventListener("input", e => {
+      if (/^#[0-9a-fA-F]{6}$/.test(e.target.value)) {
+        document.getElementById("selector").value = e.target.value;
+        dibujarTodo();
+      }
+    });
+    document.getElementById("emoji").addEventListener("input", dibujarTodo);
+    document.getElementById("bajar192").addEventListener("click", () => descargar("c192", "icono-192.png"));
+    document.getElementById("bajar512").addEventListener("click", () => descargar("c512", "icono-512.png"));
+
+    dibujarTodo();
+  </script>
+</body>
+</html>

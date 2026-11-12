@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Veterinaria Patitas</title>
+  <!-- Fuentes de Google (si no hay internet, se usa la fuente de respaldo del CSS) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- PWA: identidad de la app, color de la barra y ícono para iPhone -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#14A3A3">
+  <link rel="apple-touch-icon" href="icono-192.png">
+</head>
+<body>
+
+  <!-- ===== Encabezado: título, buscador general, exportar/importar y menú ===== -->
+  <header class="encabezado">
+    <!-- Aparece solo cuando el celular no tiene internet -->
+    <div id="aviso-offline" class="aviso-offline oculto" role="status">📴 Sin conexión: tus datos se siguen guardando en este celular</div>
+
+    <div class="barra">
+      <h1>🐾 Veterinaria Patitas</h1>
+
+      <div class="buscador">
+        <label for="buscador" class="solo-lectores">Buscar mascota o dueño</label>
+        <input type="search" id="buscador" placeholder="🔍 Buscar mascota o dueño…" autocomplete="off">
+      </div>
+
+      <div class="acciones-datos">
+        <button type="button" class="btn secundario" id="btn-exportar">⬇️ Exportar</button>
+        <button type="button" class="btn secundario" id="btn-importar">⬆️ Importar</button>
+        <input type="file" id="archivo-importar" accept=".json,application/json" hidden>
+      </div>
+    </div>
+
+    <nav id="menu" aria-label="Secciones">
+      <button type="button" data-seccion="seccion-duenos"><span class="ico">👤</span><span>Dueños</span></button>
+      <button type="button" data-seccion="seccion-mascotas"><span class="ico">🐶</span><span>Mascotas</span></button>
+      <button type="button" data-seccion="seccion-turnos" class="activo"><span class="ico">📅</span><span>Turnos</span></button>
+      <button type="button" data-seccion="seccion-historias"><span class="ico">📋</span><span>Historias</span></button>
+    </nav>
+  </header>
+
+  <!-- Resultados del buscador general -->
+  <div id="resultados-busqueda" class="resultados oculto" aria-live="polite"></div>
+
+  <main>
+
+    <!-- Aparece solo si la aplicación está vacía -->
+    <div id="bloque-ejemplo" class="tarjeta aviso-vacio oculto">
+      <p>La aplicación está vacía. Podés empezar cargando dueños, o ver cómo funciona con datos de ejemplo (todos ficticios).</p>
+      <button type="button" class="btn secundario" id="btn-ejemplo">✨ Cargar datos de ejemplo</button>
+    </div>
+
+    <!-- ================= DUEÑOS ================= -->
+    <section id="seccion-duenos" class="seccion activa">
+      <h2>👤 Dueños</h2>
+      <div class="dos-columnas">
+
+        <form id="form-dueno" class="tarjeta" novalidate>
+          <h3 id="titulo-form-dueno">Nuevo dueño</h3>
+
+          <div class="campo">
+            <label for="d-nombre">Nombre y apellido</label>
+            <input type="text" id="d-nombre" placeholder="Marta Ejemplo" autocomplete="off">
+            <small class="error" data-error="d-nombre"></small>
+          </div>
+          <div class="campo">
+            <label for="d-telefono">Teléfono</label>
+            <input type="tel" id="d-telefono" placeholder="11 5555-0303" autocomplete="off">
+            <small class="error" data-error="d-telefono"></small>
+          </div>
+          <div class="campo">
+            <label for="d-email">Email (opcional)</label>
+            <input type="email" id="d-email" placeholder="marta@ejemplo.com" autocomplete="off">
+            <small class="error" data-error="d-email"></small>
+          </div>
+          <div class="campo">
+            <label for="d-direccion">Dirección (opcional)</label>
+            <input type="text" id="d-direccion" placeholder="Calle Falsa 123" autocomplete="off">
+            <small class="error" data-error="d-direccion"></small>
+          </div>
+
+          <div class="fila-botones">
+            <button type="submit" class="btn" id="d-guardar">Guardar dueño</button>
+            <button type="button" class="btn secundario oculto" id="d-cancelar">Cancelar</button>
+          </div>
+        </form>
+
+        <div>
+          <h3 class="subtitulo">Lista de dueños</h3>
+          <div id="lista-duenos" class="lista"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= MASCOTAS ================= -->
+    <section id="seccion-mascotas" class="seccion">
+      <h2>🐶 Mascotas</h2>
+      <div class="dos-columnas">
+
+        <form id="form-mascota" class="tarjeta" novalidate>
+          <h3 id="titulo-form-mascota">Nueva mascota</h3>
+
+          <div class="campo">
+            <label for="m-dueno">Dueño</label>
+            <select id="m-dueno"></select>
+            <small class="error" data-error="m-dueno"></small>
+          </div>
+          <div class="campo">
+            <label for="m-nombre">Nombre</label>
+            <input type="text" id="m-nombre" placeholder="Firulais" autocomplete="off">
+            <small class="error" data-error="m-nombre"></small>
+          </div>
+          <div class="campo">
+            <label for="m-especie">Especie</label>
+            <select id="m-especie">
+              <option value="perro">Perro</option>
+              <option value="gato">Gato</option>
+              <option value="ave">Ave</option>
+              <option value="conejo">Conejo</option>
+              <option value="otro">Otro</option>
+            </select>
+            <small class="error" data-error="m-especie"></small>
+          </div>
+          <div class="campo">
+            <label for="m-raza">Raza (opcional)</label>
+            <input type="text" id="m-raza" placeholder="Mestizo" autocomplete="off">
+            <small class="error" data-error="m-raza"></small>
+          </div>
+          <div class="campo">
+            <label for="m-sexo">Sexo</label>
+            <select id="m-sexo">
+              <option value="">Sin indicar</option>
+              <option value="macho">Macho</option>
+              <option value="hembra">Hembra</option>
+            </select>
+            <small class="error" data-error="m-sexo"></small>
+          </div>
+          <div class="campo">
+            <label for="m-nacimiento">Fecha de nacimiento</label>
+            <input type="date" id="m-nacimiento">
+            <small class="error" data-error="m-nacimiento"></small>
+          </div>
+          <div class="campo">
+            <label for="m-peso">Peso en kg (opcional)</label>
+            <input type="number" id="m-peso" step="0.1" min="0" inputmode="decimal" placeholder="14.2">
+            <small class="error" data-error="m-peso"></small>
+          </div>
+
+          <div class="fila-botones">
+            <button type="submit" class="btn" id="m-guardar">Guardar mascota</button>
+            <button type="button" class="btn secundario oculto" id="m-cancelar">Cancelar</button>
+          </div>
+        </form>
+
+        <div>
+          <h3 class="subtitulo">Lista de mascotas</h3>
+          <div id="lista-mascotas" class="lista"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TURNOS ================= -->
+    <section id="seccion-turnos" class="seccion">
+      <h2>📅 Turnos</h2>
+      <div class="dos-columnas">
+
+        <form id="form-turno" class="tarjeta" novalidate>
+          <h3 id="titulo-form-turno">Nuevo turno</h3>
+
+          <div class="campo">
+            <label for="t-mascota">Mascota</label>
+            <select id="t-mascota"></select>
+            <small class="error" data-error="t-mascota"></small>
+          </div>
+          <div class="campo">
+            <label for="t-fecha">Fecha</label>
+            <input type="date" id="t-fecha">
+            <small class="error" data-error="t-fecha"></small>
+          </div>
+          <div class="campo">
+            <label for="t-hora">Hora (de 9:00 a 20:00)</label>
+            <input type="time" id="t-hora" min="09:00" max="20:00" step="900">
+            <small class="error" data-error="t-hora"></small>
+          </div>
+          <div class="campo">
+            <label for="t-motivo">Motivo</label>
+            <input type="text" id="t-motivo" placeholder="Vacuna, control, consulta…" autocomplete="off">
+            <small class="error" data-error="t-motivo"></small>
+          </div>
+          <div class="campo">
+            <label for="t-veterinario">Veterinario/a</label>
+            <input type="text" id="t-veterinario" placeholder="Dra. Ficticia" autocomplete="off">
+            <small class="error" data-error="t-veterinario"></small>
+          </div>
+
+          <div class="fila-botones">
+            <button type="submit" class="btn" id="t-guardar">Dar turno</button>
+            <button type="button" class="btn secundario oculto" id="t-cancelar">Cancelar</button>
+          </div>
+        </form>
+
+        <div>
+          <h3 class="subtitulo">Agenda</h3>
+          <div class="controles-agenda">
+            <button type="button" class="btn secundario" id="agenda-anterior" aria-label="Día anterior">◀</button>
+            <input type="date" id="agenda-fecha" aria-label="Día de la agenda">
+            <button type="button" class="btn secundario" id="agenda-siguiente" aria-label="Día siguiente">▶</button>
+            <button type="button" class="btn" id="agenda-hoy">Hoy</button>
+          </div>
+          <p id="agenda-titulo" class="titulo-dia"></p>
+          <div id="semana" class="semana" aria-label="Semana"></div>
+          <div id="agenda" class="lista"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= HISTORIAS ================= -->
+    <section id="seccion-historias" class="seccion">
+      <h2>📋 Historia clínica</h2>
+
+      <div class="tarjeta">
+        <div class="campo">
+          <label for="h-mascota">Mascota</label>
+          <select id="h-mascota"></select>
+          <small class="error" data-error="h-mascota"></small>
+        </div>
+      </div>
+
+      <div class="dos-columnas">
+
+        <form id="form-consulta" class="tarjeta" novalidate>
+          <h3 id="titulo-form-consulta">Nueva consulta</h3>
+          <p id="c-turno-info" class="info-turno"></p>
+
+          <div class="campo">
+            <label for="c-fecha">Fecha de la consulta</label>
+            <input type="date" id="c-fecha">
+            <small class="error" data-error="c-fecha"></small>
+          </div>
+          <div class="campo">
+            <label for="c-peso">Peso en kg</label>
+            <input type="number" id="c-peso" step="0.1" min="0" inputmode="decimal" placeholder="14.5">
+            <small class="error" data-error="c-peso"></small>
+          </div>
+          <div class="campo">
+            <label for="c-motivo">Motivo</label>
+            <input type="text" id="c-motivo" autocomplete="off">
+            <small class="error" data-error="c-motivo"></small>
+          </div>
+          <div class="campo">
+            <label for="c-diagnostico">Diagnóstico</label>
+            <textarea id="c-diagnostico" rows="2"></textarea>
+            <small class="error" data-error="c-diagnostico"></small>
+          </div>
+          <div class="campo">
+            <label for="c-tratamiento">Tratamiento</label>
+            <textarea id="c-tratamiento" rows="2"></textarea>
+            <small class="error" data-error="c-tratamiento"></small>
+          </div>
+          <div class="campo">
+            <label for="c-vacunas">Vacunas aplicadas (opcional)</label>
+            <input type="text" id="c-vacunas" placeholder="Antirrábica" autocomplete="off">
+            <small class="error" data-error="c-vacunas"></small>
+          </div>
+          <div class="campo">
+            <label for="c-proximo">Próximo control (opcional)</label>
+            <input type="date" id="c-proximo">
+            <small class="error" data-error="c-proximo"></small>
+          </div>
+
+          <div class="fila-botones">
+            <button type="submit" class="btn" id="c-guardar">Guardar consulta</button>
+            <button type="button" class="btn secundario oculto" id="c-cancelar">Cancelar</button>
+          </div>
+        </form>
+
+        <div>
+          <h3 class="subtitulo">Línea de tiempo</h3>
+          <div id="linea-tiempo"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div id="aviso" class="aviso" role="status" aria-live="polite"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
